@@ -7,9 +7,9 @@
   },
   "dependencies": {
     "@apollo/server": "^4.9.5",
-    "@elysiajs/apollo": "^0.8.0",
     "@elysiajs/bearer": "^0.8.0",
     "@elysiajs/cron": "^0.8.0",
+    "@elysiajs/graphql-yoga": "^0.8.0",
     "@elysiajs/swagger": "^0.8.0",
     "elysia": "^0.8.6",
     "graphql": "^16.8.1",

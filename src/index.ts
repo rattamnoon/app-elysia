@@ -1,9 +1,9 @@
-import { apollo, gql } from "@elysiajs/apollo";
 import bearer from "@elysiajs/bearer";
 import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 
 import { healthCheck, users } from "@/route";
+import { yoga } from "@elysiajs/graphql-yoga";
 
 const app = new Elysia();
 
@@ -13,35 +13,16 @@ app
   .use(healthCheck)
   .use(users)
   .use(
-    apollo({
-      typeDefs: gql`
-        type Book {
-          title: String
-          author: String
-        }
-
+    yoga({
+      typeDefs: /* GraphQL */ `
         type Query {
-          books: [Book]
+          hi: String
         }
       `,
       resolvers: {
         Query: {
-          books: () => {
-            return [
-              {
-                title: "Elysia",
-                author: "saltyAom",
-              },
-            ];
-          },
+          hi: () => "Hello from Elysia",
         },
-      },
-      context: async ({ request }) => {
-        const authorization = request.headers.get("Authorization");
-
-        return {
-          authorization,
-        };
       },
     })
   )
