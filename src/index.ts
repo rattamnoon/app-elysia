@@ -1,5 +1,6 @@
 import bearer from "@elysiajs/bearer";
 import swagger from "@elysiajs/swagger";
+import axios from "axios";
 import { Elysia } from "elysia";
 
 import { healthCheck, users } from "@/route";
@@ -7,6 +8,8 @@ import { yoga } from "@elysiajs/graphql-yoga";
 
 import User from "@/database/models/User.model";
 import { loaders } from "@/utils/loader";
+import Amphure from "./database/models/Amphure.model";
+import Province from "./database/models/Province.model";
 
 const app = new Elysia();
 
@@ -21,17 +24,34 @@ app
         type Query {
           allUsers: [User!]!
           getUser(id: String!): User!
+
+          allProvinces: [Province!]!
         }
 
         type Mutation {
           createUser(email: String!, password: String!): User!
           updateUser(id: String!, email: String!, password: String!): User!
           deleteUser(id: String!): Boolean!
+
+          createProvince: [Province!]!
         }
 
         type User {
           id: ID!
           email: String!
+        }
+
+        type Province {
+          id: Int!
+          nameThai: String!
+          nameEng: String!
+        }
+
+        type Amphure {
+          id: Int!
+          nameThai: String!
+          nameEng: String!
+          provinceId: Int!
         }
       `,
       context: {
@@ -53,6 +73,11 @@ app
             }
 
             return user;
+          },
+          allProvinces: async () => {
+            const provinces = await Province.findAll();
+
+            return provinces;
           },
         },
         Mutation: {
@@ -117,6 +142,39 @@ app
             } catch (error) {
               throw new Error("Error deleting user");
             }
+          },
+          createProvince: async () => {
+            const resuts = await axios.get(
+              "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province_with_amphure_tambon.json",
+              { responseType: "json" }
+            );
+
+            console.log(resuts);
+
+            const provinces = resuts.data.map((province: any) => ({
+              id: province.id,
+              nameThai: province.name_th,
+              nameEng: province.name_en,
+              amphures: province.amphure.map((amphure: any) => ({
+                id: amphure.id,
+                nameThai: amphure.name_th,
+                nameEng: amphure.name_en,
+                // tambons: amphure.tambons.map((tambon: any) => ({
+                //   id: tambon.id,
+                //   nameThai: tambon.name_th,
+                //   nameEng: tambon.name_en,
+                //   zipCode: tambon.zip_code,
+                // })),
+              })),
+            }));
+
+            console.log(provinces);
+
+            const data = await Province.bulkCreate(provinces, {
+              include: [{ model: Amphure, as: "amphures" }],
+            });
+
+            return data;
           },
         },
       },
