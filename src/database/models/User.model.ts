@@ -31,7 +31,7 @@ User.init(
     },
   },
   {
-    // Other model options go here
+    tableName: "users",
     sequelize, // We need to pass the connection instance
   }
 );
