@@ -4,6 +4,8 @@ import { cron } from "@elysiajs/cron";
 import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 
+import sequelize from "@/database/sequelize";
+
 const app = new Elysia();
 
 app
@@ -30,6 +32,14 @@ app
 
       return "Hello Elysia";
     },
+  })
+  .get("/health", async () => {
+    try {
+      await sequelize.authenticate();
+      console.log("Connection has been established successfully.");
+    } catch (error) {
+      console.error("Unable to connect to the database:", error);
+    }
   })
   .use(
     swagger({
