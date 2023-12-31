@@ -6,6 +6,7 @@ import { healthCheck, users } from "@/route";
 import { yoga } from "@elysiajs/graphql-yoga";
 
 import User from "@/database/models/User.model";
+import { loaders } from "@/utils/loader";
 
 const app = new Elysia();
 
@@ -18,7 +19,6 @@ app
     yoga({
       typeDefs: /* GraphQL */ `
         type Query {
-          hi: String
           allUsers: [User!]!
           getUser(id: String!): User!
         }
@@ -35,18 +35,18 @@ app
         }
       `,
       context: {
-        name: "Mobius",
+        loaders,
       },
       useContext(_) {},
       resolvers: {
         Query: {
-          hi: async (parent, args, context) => context.name,
-          allUsers: async () => {
+          allUsers: async (parent, args) => {
             const users = await User.findAll();
+
             return users;
           },
-          getUser: async (_, { id }) => {
-            const user = await User.findByPk(id);
+          getUser: async (_, { id }, { loaders }) => {
+            const user = await loaders.userLoader.load(id);
 
             if (!user) {
               throw new Error("User not found");
