@@ -11,7 +11,6 @@ import sequelize from "@/database/sequelize";
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>;
 
-  declare username: string;
   declare password: string;
   declare email: string;
 
@@ -28,7 +27,7 @@ User.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    username: {
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
@@ -36,11 +35,6 @@ User.init(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
     },
     createdAt: {
       type: DataTypes.DATE,

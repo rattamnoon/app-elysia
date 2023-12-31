@@ -10,7 +10,7 @@ const app = new Elysia();
 app
   .use(bearer())
   .use(swagger({ path: "/docs" }))
-  .get("/healthCheck", healthCheck)
+  .use(healthCheck)
   .use(users)
   .use(
     apollo({

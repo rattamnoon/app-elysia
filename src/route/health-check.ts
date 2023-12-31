@@ -1,6 +1,7 @@
 import sequelize from "@/database/sequelize";
+import Elysia from "elysia";
 
-const healthCheck = async () => {
+const database = async () => {
   try {
     await sequelize.authenticate();
     return "Connection has been established successfully.";
@@ -8,5 +9,10 @@ const healthCheck = async () => {
     return "Unable to connect to the database";
   }
 };
+
+const healthCheck = new Elysia({ prefix: "/health-check" }).get(
+  "/database",
+  database
+);
 
 export default healthCheck;

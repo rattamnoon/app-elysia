@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
-      username: {
+      email: {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
         unique: true,
@@ -17,11 +17,6 @@ module.exports = {
       password: {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
-      },
-      email: {
-        type: Sequelize.DataTypes.STRING,
-        allowNull: false,
-        unique: true,
       },
       createdAt: {
         type: Sequelize.DataTypes.DATE,
