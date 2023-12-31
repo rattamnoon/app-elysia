@@ -11,6 +11,7 @@
     "@elysiajs/bearer": "^0.8.0",
     "@elysiajs/cron": "^0.8.0",
     "@elysiajs/swagger": "^0.8.0",
+    "@sequelize/core": "alpha",
     "elysia": "^0.8.6",
     "graphql": "^16.8.1"
   },
