@@ -69,11 +69,15 @@ app
               timeCost: 3,
             });
 
-            const user = await User.create({ email, password: argonHash });
+            try {
+              const user = await User.create({ email, password: argonHash });
 
-            user.password = "";
+              user.password = "";
 
-            return user;
+              return user;
+            } catch (error) {
+              throw new Error("Error creating user");
+            }
           },
           updateUser: async (_, { id, email, password }) => {
             const user = await User.findByPk(id);
@@ -88,12 +92,16 @@ app
               timeCost: 3,
             });
 
-            user.email = email;
-            user.password = argonHash;
+            try {
+              user.email = email;
+              user.password = argonHash;
 
-            await user.save();
+              await user.save();
 
-            return user;
+              return user;
+            } catch (error) {
+              throw new Error("Error updating user");
+            }
           },
           deleteUser: async (_, { id }) => {
             const user = await User.findByPk(id);
@@ -102,9 +110,13 @@ app
               throw new Error("User not found");
             }
 
-            await user.destroy();
+            try {
+              await user.destroy();
 
-            return true;
+              return true;
+            } catch (error) {
+              throw new Error("Error deleting user");
+            }
           },
         },
       },
