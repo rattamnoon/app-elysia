@@ -10,24 +10,47 @@ import sequelize from "@/database/sequelize";
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<number>;
-  declare firstName: string;
-  declare lastName: string | null;
+
+  declare username: string;
+  declare password: string;
+  declare email: string;
+
+  // createdAt can be undefined during creation
+  declare createdAt: CreationOptional<Date>;
+  // updatedAt can be undefined during creation
+  declare updatedAt: CreationOptional<Date>;
 }
 
 User.init(
   {
     id: {
       type: DataTypes.INTEGER,
-      autoIncrement: true,
       primaryKey: true,
+      autoIncrement: true,
     },
-    firstName: {
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    password: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    lastName: {
+    email: {
       type: DataTypes.STRING,
-      // allowNull defaults to true, except for primary keys
+      allowNull: false,
+      unique: true,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
   },
   {
@@ -35,3 +58,5 @@ User.init(
     sequelize,
   }
 );
+
+export default User;

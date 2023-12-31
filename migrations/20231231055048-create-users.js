@@ -23,6 +23,20 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      createdAt: {
+        type: Sequelize.DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn("NOW"),
+      },
+      updatedAt: {
+        type: Sequelize.DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn("NOW"),
+      },
+      deletedAt: {
+        type: Sequelize.DataTypes.DATE,
+        allowNull: true,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {

@@ -1,51 +1,17 @@
 import { apollo, gql } from "@elysiajs/apollo";
 import bearer from "@elysiajs/bearer";
-import { cron } from "@elysiajs/cron";
 import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 
-import sequelize from "@/database/sequelize";
+import { healthCheck, users } from "@/route";
 
 const app = new Elysia();
 
 app
   .use(bearer())
-  .use(
-    cron({
-      name: "heartbeat",
-      pattern: "*/10 * * * * *",
-      run() {
-        console.log("Heartbeat");
-      },
-    })
-  )
-  .get("/", ({ bearer }) => bearer, {
-    beforeHandle({ bearer, set }) {
-      if (bearer !== "Bearer xxxxx") {
-        set.status = 400;
-        set.headers[
-          "WWW-Authenticate"
-        ] = `Bearer realm='sign', error="invalid_request"`;
-
-        return "Unauthorized";
-      }
-
-      return "Hello Elysia";
-    },
-  })
-  .get("/health", async () => {
-    try {
-      await sequelize.authenticate();
-      console.log("Connection has been established successfully.");
-    } catch (error) {
-      console.error("Unable to connect to the database:", error);
-    }
-  })
-  .use(
-    swagger({
-      path: "/docs",
-    })
-  )
+  .use(swagger({ path: "/docs" }))
+  .get("/healthCheck", healthCheck)
+  .use(users)
   .use(
     apollo({
       typeDefs: gql`

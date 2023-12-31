@@ -20,7 +20,10 @@ Open http://localhost:3000/ with your browser to see the result.
 
 Env
 
-```
+```js
 Authorization Bearer xxxxx
 ```
-# app-elysia
+
+```shell
+cd database && docker compose up -d && cd .. && bun dev
+```

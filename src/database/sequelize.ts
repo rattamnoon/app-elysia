@@ -7,6 +7,10 @@ const sequelize = new Sequelize({
   username: "user",
   password: "password",
   database: "db",
+  define: {
+    paranoid: true,
+    timestamps: true,
+  },
   //   models: [],
 });
 
