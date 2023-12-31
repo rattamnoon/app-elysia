@@ -4,7 +4,7 @@ import {
   InferAttributes,
   InferCreationAttributes,
   Model,
-} from "@sequelize/core";
+} from "sequelize";
 
 import sequelize from "@/database/sequelize";
 
@@ -32,6 +32,6 @@ User.init(
   },
   {
     tableName: "users",
-    sequelize, // We need to pass the connection instance
+    sequelize,
   }
 );
