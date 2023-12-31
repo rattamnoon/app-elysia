@@ -19,6 +19,8 @@ const signIn = async ({ body }: { body: User }) => {
     return `Password is incorrect`;
   }
 
+  user.password = "";
+
   return user;
 };
 
@@ -39,10 +41,9 @@ const signUp = async ({ body }: { body: User }) => {
   });
 
   try {
-    const createUser = await User.create({
-      email,
-      password: argonHash,
-    });
+    const createUser = await User.create({ email, password: argonHash });
+
+    createUser.password = "";
 
     return createUser;
   } catch (error) {
@@ -56,6 +57,8 @@ const profile = async ({ body }: { body: User }) => {
   if (!user) {
     return `Email not found`;
   }
+
+  user.password = "";
 
   return user;
 };

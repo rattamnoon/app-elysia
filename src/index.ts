@@ -19,9 +19,13 @@ app
           hi: String
         }
       `,
+      context: {
+        name: "Mobius",
+      },
+      useContext(_) {},
       resolvers: {
         Query: {
-          hi: () => "Hello from Elysia",
+          hi: async (parent, args, context) => context.name,
         },
       },
     })
