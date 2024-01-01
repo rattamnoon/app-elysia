@@ -26,3 +26,16 @@ services:
   #   volumes:
   #     - ./data-mysql:/var/lib/mysql
   #   command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+#   redis:
+#     image: docker.io/bitnami/redis:7.2
+#     environment:
+#       - ALLOW_EMPTY_PASSWORD=yes
+#       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+#     ports:
+#       - "6379:6379"
+#     volumes:
+#       - "redis_data:/bitnami/redis/data"
+
+# volumes:
+#   redis_data:
+#     driver: local

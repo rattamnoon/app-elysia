@@ -1,22 +1,18 @@
 import bearer from "@elysiajs/bearer";
+import { yoga } from "@elysiajs/graphql-yoga";
 import swagger from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 
-import { healthCheck, users } from "@/route";
-import { yoga } from "@elysiajs/graphql-yoga";
-
 import User from "@/database/models/User.model";
-import { Loader, loaders } from "@/utils/loader";
-
 import District from "./database/models/District.model";
 import Province from "./database/models/Province.model";
 import SubDistrict from "./database/models/SubDistrict.model";
 
-const app = new Elysia();
+import { healthCheck, users } from "@/route";
 
-type Context = {
-  loaders: Loader;
-};
+import { createContext, type GraphQLContext } from "./utils/context";
+
+const app = new Elysia();
 
 app
   .use(bearer())
@@ -73,9 +69,7 @@ app
           district: District!
         }
       `,
-      context: {
-        loaders,
-      },
+      context: createContext(),
       useContext(_) {},
       resolvers: {
         Query: {
@@ -174,21 +168,25 @@ app
           },
         },
         Province: {
-          districts(parent: Province, args: {}, { loaders }: Context) {
+          districts(parent: Province, args: {}, { loaders }: GraphQLContext) {
             const districts = loaders.districtsByProvinceLoader.load(parent.id);
             return districts;
           },
         },
         District: {
-          province(parent: District, args: {}, { loaders }: Context) {
+          province(parent: District, args: {}, { loaders }: GraphQLContext) {
             return loaders.provinceLoader.load(parent.provinceId);
           },
-          subDistricts(parent: District, args: {}, { loaders }: Context) {
+          subDistricts(
+            parent: District,
+            args: {},
+            { loaders }: GraphQLContext
+          ) {
             return loaders.subDistrictsByDistrictLoader.load(parent.id);
           },
         },
         SubDistrict: {
-          district(parent: SubDistrict, args: {}, { loaders }: Context) {
+          district(parent: SubDistrict, args: {}, { loaders }: GraphQLContext) {
             return loaders.districtLoader.load(parent.districtId);
           },
         },

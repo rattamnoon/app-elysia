@@ -11,7 +11,7 @@ const sequelize = new Sequelize({
     paranoid: true,
     timestamps: true,
   },
-  //   models: [],
+  // models: [],
   logging: false,
 });
 
