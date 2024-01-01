@@ -27,12 +27,12 @@ class Province extends Model<
   // updatedAt can be undefined during creation
   declare updatedAt: CreationOptional<Date>;
 
-  public getAmphures!: HasManyGetAssociationsMixin<District>;
+  public getDistrict!: HasManyGetAssociationsMixin<District>;
 
-  public addAmphure!: HasManyAddAssociationMixin<District, number>;
+  public addDistrict!: HasManyAddAssociationMixin<District, number>;
 
   public static associations: {
-    amphures: Association<Province, District>;
+    districts: Association<Province, District>;
   };
 }
 

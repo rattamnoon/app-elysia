@@ -32,11 +32,12 @@ class District extends Model<
 
   declare getProvince: BelongsToGetAssociationMixin<Province>;
 
-  declare getTambons: HasManyGetAssociationsMixin<SubDistrict>;
+  declare getSubDistricts: HasManyGetAssociationsMixin<SubDistrict>;
 
-  public addAmphure!: HasManyAddAssociationMixin<SubDistrict, number>;
+  declare addSubDistrict: HasManyAddAssociationMixin<SubDistrict, number>;
 
   public static associations: {
+    province: Association<District, Province>;
     subDistricts: Association<District, SubDistrict>;
   };
 }
