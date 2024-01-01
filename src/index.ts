@@ -1,6 +1,5 @@
 import bearer from "@elysiajs/bearer";
 import swagger from "@elysiajs/swagger";
-import axios from "axios";
 import { Elysia } from "elysia";
 
 import { healthCheck, users } from "@/route";
@@ -8,6 +7,7 @@ import { yoga } from "@elysiajs/graphql-yoga";
 
 import User from "@/database/models/User.model";
 import { loaders } from "@/utils/loader";
+
 import Amphure from "./database/models/Amphure.model";
 import Province from "./database/models/Province.model";
 import Tambon from "./database/models/Tambon.model";
@@ -30,14 +30,14 @@ app
           getUser(id: String!): User!
 
           allProvinces: [Province!]!
+          allAmphures: [Amphure!]!
+          allTambons: [Tambon!]!
         }
 
         type Mutation {
           createUser(email: String!, password: String!): User!
           updateUser(id: String!, email: String!, password: String!): User!
           deleteUser(id: String!): Boolean!
-
-          createProvince: [Province!]!
         }
 
         type User {
@@ -82,6 +82,16 @@ app
             const provinces = await Province.findAll();
 
             return provinces;
+          },
+          allAmphures: async () => {
+            const amphures = await Amphure.findAll();
+
+            return amphures;
+          },
+          allTambons: async () => {
+            const tambons = await Tambon.findAll();
+
+            return tambons;
           },
         },
         Mutation: {
@@ -146,41 +156,6 @@ app
             } catch (error) {
               throw new Error("Error deleting user");
             }
-          },
-          createProvince: async () => {
-            const mainUrl =
-              "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province_with_amphure_tambon.json";
-
-            const resuts = await axios.get(mainUrl, { responseType: "json" });
-
-            const provinces = resuts.data.map((province: any) => ({
-              id: province.id,
-              nameThai: province.name_th,
-              nameEng: province.name_en,
-              amphures: province.amphure.map((amphure: any) => ({
-                id: amphure.id,
-                nameThai: amphure.name_th,
-                nameEng: amphure.name_en,
-                tambons: amphure.tambon.map((tambon: any) => ({
-                  id: tambon.id,
-                  nameThai: tambon.name_th,
-                  nameEng: tambon.name_en,
-                  zipCode: tambon.zip_code,
-                })),
-              })),
-            }));
-
-            const data = await Province.bulkCreate(provinces, {
-              include: [
-                {
-                  model: Amphure,
-                  as: "amphures",
-                  include: [{ model: Tambon, as: "tambons" }],
-                },
-              ],
-            });
-
-            return data;
           },
         },
       },
