@@ -24,6 +24,16 @@ Env
 Authorization Bearer xxxxx
 ```
 
+## Getting Started Run
+
+### Run database and migrate
+
 ```shell
-cd database && docker compose up -d && cd .. && bun dev
+bun db:run
+```
+
+### Run seed
+
+```shell
+bun db:seed
 ```
