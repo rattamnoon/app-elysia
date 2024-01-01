@@ -10,13 +10,13 @@ module.exports = {
       { responseType: "json" }
     );
 
-    const provinces = province.data.map((province) => ({
-      id: province.id,
-      nameThai: province.name_th,
-      nameEng: province.name_en,
+    const data = province.data.map((item) => ({
+      id: item.id,
+      nameThai: item.name_th,
+      nameEng: item.name_en,
     }));
 
-    return queryInterface.bulkInsert("province", provinces);
+    return queryInterface.bulkInsert("province", data);
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.bulkDelete("province", null, {});

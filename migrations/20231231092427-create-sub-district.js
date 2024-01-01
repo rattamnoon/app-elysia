@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("tambon", {
+    return queryInterface.createTable("subDistrict", {
       id: {
         type: Sequelize.DataTypes.INTEGER,
         primaryKey: true,
@@ -21,10 +21,10 @@ module.exports = {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
       },
-      amphureId: {
+      districtId: {
         type: Sequelize.DataTypes.INTEGER,
         allowNull: false,
-        references: { model: "amphure", key: "id" },
+        references: { model: "district", key: "id" },
       },
       createdAt: {
         type: Sequelize.DataTypes.DATE,
@@ -43,6 +43,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("tambon");
+    return queryInterface.dropTable("subDistrict");
   },
 };

@@ -5,21 +5,21 @@ const axios = require("axios");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const amphure = await axios.get(
+    const district = await axios.get(
       "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_amphure.json",
       { responseType: "json" }
     );
 
-    const amphures = amphure.data.map((amphure) => ({
-      id: amphure.id,
-      nameThai: amphure.name_th,
-      nameEng: amphure.name_en,
-      provinceId: amphure.province_id,
+    const data = district.data.map((item) => ({
+      id: item.id,
+      nameThai: item.name_th,
+      nameEng: item.name_en,
+      provinceId: item.province_id,
     }));
 
-    return queryInterface.bulkInsert("amphure", amphures);
+    return queryInterface.bulkInsert("district", data);
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete("province", null, {});
+    return queryInterface.bulkDelete("district", null, {});
   },
 };

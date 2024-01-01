@@ -8,11 +8,11 @@ import {
 } from "sequelize";
 
 import sequelize from "@/database/sequelize";
-import Amphure from "./Amphure.model";
+import Amphure from "./District.model";
 
-class Tambon extends Model<
-  InferAttributes<Tambon>,
-  InferCreationAttributes<Tambon>
+class SubDistrict extends Model<
+  InferAttributes<SubDistrict>,
+  InferCreationAttributes<SubDistrict>
 > {
   declare id: CreationOptional<number>;
 
@@ -21,7 +21,7 @@ class Tambon extends Model<
   declare nameThai: string;
   declare nameEng: string;
 
-  declare amphureId: number;
+  declare districtId: number;
 
   // createdAt can be undefined during creation
   declare createdAt: CreationOptional<Date>;
@@ -31,7 +31,7 @@ class Tambon extends Model<
   declare getAmphure: BelongsToGetAssociationMixin<Amphure>;
 }
 
-Tambon.init(
+SubDistrict.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -50,10 +50,10 @@ Tambon.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    amphureId: {
+    districtId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "amphure", key: "id" },
+      references: { model: "district", key: "id" },
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -67,9 +67,9 @@ Tambon.init(
     },
   },
   {
-    tableName: "tambon",
+    tableName: "subDistrict",
     sequelize,
   }
 );
 
-export default Tambon;
+export default SubDistrict;

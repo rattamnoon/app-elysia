@@ -8,9 +8,9 @@ import { yoga } from "@elysiajs/graphql-yoga";
 import User from "@/database/models/User.model";
 import { loaders } from "@/utils/loader";
 
-import Amphure from "./database/models/Amphure.model";
+import Amphure from "./database/models/District.model";
 import Province from "./database/models/Province.model";
-import Tambon from "./database/models/Tambon.model";
+import Tambon from "./database/models/SubDistrict.model";
 
 const app = new Elysia();
 

@@ -12,11 +12,11 @@ import {
 
 import sequelize from "@/database/sequelize";
 import Province from "./Province.model";
-import Tambon from "./Tambon.model";
+import SubDistrict from "./SubDistrict.model";
 
-class Amphure extends Model<
-  InferAttributes<Amphure>,
-  InferCreationAttributes<Amphure>
+class District extends Model<
+  InferAttributes<District>,
+  InferCreationAttributes<District>
 > {
   declare id: CreationOptional<number>;
 
@@ -32,16 +32,16 @@ class Amphure extends Model<
 
   declare getProvince: BelongsToGetAssociationMixin<Province>;
 
-  declare getTambons: HasManyGetAssociationsMixin<Tambon>;
+  declare getTambons: HasManyGetAssociationsMixin<SubDistrict>;
 
-  public addAmphure!: HasManyAddAssociationMixin<Tambon, number>;
+  public addAmphure!: HasManyAddAssociationMixin<SubDistrict, number>;
 
   public static associations: {
-    tambons: Association<Amphure, Tambon>;
+    subDistricts: Association<District, SubDistrict>;
   };
 }
 
-Amphure.init(
+District.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -73,15 +73,15 @@ Amphure.init(
     },
   },
   {
-    tableName: "amphure",
+    tableName: "district",
     sequelize,
   }
 );
 
-Amphure.hasMany(Tambon, {
+District.hasMany(SubDistrict, {
   sourceKey: "id",
-  foreignKey: "amphureId",
-  as: "tambons",
+  foreignKey: "districtId",
+  as: "subDistricts",
 });
 
-export default Amphure;
+export default District;

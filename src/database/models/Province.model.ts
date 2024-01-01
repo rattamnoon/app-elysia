@@ -11,7 +11,7 @@ import {
 
 import sequelize from "@/database/sequelize";
 
-import Amphure from "./Amphure.model";
+import District from "./District.model";
 
 class Province extends Model<
   InferAttributes<Province>,
@@ -27,12 +27,12 @@ class Province extends Model<
   // updatedAt can be undefined during creation
   declare updatedAt: CreationOptional<Date>;
 
-  public getAmphures!: HasManyGetAssociationsMixin<Amphure>;
+  public getAmphures!: HasManyGetAssociationsMixin<District>;
 
-  public addAmphure!: HasManyAddAssociationMixin<Amphure, number>;
+  public addAmphure!: HasManyAddAssociationMixin<District, number>;
 
   public static associations: {
-    amphures: Association<Province, Amphure>;
+    amphures: Association<Province, District>;
   };
 }
 
@@ -68,10 +68,10 @@ Province.init(
   }
 );
 
-Province.hasMany(Amphure, {
+Province.hasMany(District, {
   sourceKey: "id",
   foreignKey: "provinceId",
-  as: "amphures",
+  as: "districts",
 });
 
 export default Province;
