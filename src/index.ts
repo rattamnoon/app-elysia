@@ -25,6 +25,8 @@ app
   .use(
     yoga({
       typeDefs: /* GraphQL */ `
+        scalar Date
+
         type Query {
           allUsers: [User!]!
           getUser(id: String!): User!
@@ -43,6 +45,9 @@ app
         type User {
           id: ID!
           email: String!
+
+          createdAt: Date!
+          updatedAt: Date!
         }
 
         type Province {
@@ -50,6 +55,9 @@ app
           nameThai: String!
           nameEng: String!
           districts: [District!]!
+
+          createdAt: Date!
+          updatedAt: Date!
         }
 
         type District {
@@ -59,6 +67,9 @@ app
           provinceId: Int!
           province: Province!
           subDistricts: [SubDistrict!]
+
+          createdAt: Date!
+          updatedAt: Date!
         }
 
         type SubDistrict {
@@ -67,6 +78,9 @@ app
           nameEng: String!
           districtId: Int!
           district: District!
+
+          createdAt: Date!
+          updatedAt: Date!
         }
       `,
       context: createContext(),
@@ -168,25 +182,36 @@ app
           },
         },
         Province: {
-          districts(parent: Province, args: {}, { loaders }: GraphQLContext) {
-            const districts = loaders.districtsByProvinceLoader.load(parent.id);
-            return districts;
+          districts(
+            parent: Province,
+            args: {},
+            { loaders }: GraphQLContext
+          ): Promise<District[]> {
+            return loaders.districtsByProvinceLoader.load(parent.id);
           },
         },
         District: {
-          province(parent: District, args: {}, { loaders }: GraphQLContext) {
-            return loaders.provinceLoader.load(parent.provinceId);
-          },
-          subDistricts(
+          async province(
             parent: District,
             args: {},
             { loaders }: GraphQLContext
-          ) {
+          ): Promise<Province> {
+            return loaders.provinceLoader.load(parent.provinceId);
+          },
+          async subDistricts(
+            parent: District,
+            args: {},
+            { loaders }: GraphQLContext
+          ): Promise<SubDistrict[]> {
             return loaders.subDistrictsByDistrictLoader.load(parent.id);
           },
         },
         SubDistrict: {
-          district(parent: SubDistrict, args: {}, { loaders }: GraphQLContext) {
+          async district(
+            parent: SubDistrict,
+            args: {},
+            { loaders }: GraphQLContext
+          ): Promise<District> {
             return loaders.districtLoader.load(parent.districtId);
           },
         },
