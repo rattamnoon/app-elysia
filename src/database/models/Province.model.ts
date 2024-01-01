@@ -31,8 +31,6 @@ class Province extends Model<
 
   public addAmphure!: HasManyAddAssociationMixin<Amphure, number>;
 
-  // public amphures: Amphure[];
-
   public static associations: {
     amphures: Association<Province, Amphure>;
   };

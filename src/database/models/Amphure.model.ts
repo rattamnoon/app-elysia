@@ -1,7 +1,9 @@
 import {
+  Association,
   BelongsToGetAssociationMixin,
   CreationOptional,
   DataTypes,
+  HasManyAddAssociationMixin,
   HasManyGetAssociationsMixin,
   InferAttributes,
   InferCreationAttributes,
@@ -29,7 +31,14 @@ class Amphure extends Model<
   declare updatedAt: CreationOptional<Date>;
 
   declare getProvince: BelongsToGetAssociationMixin<Province>;
+
   declare getTambons: HasManyGetAssociationsMixin<Tambon>;
+
+  public addAmphure!: HasManyAddAssociationMixin<Tambon, number>;
+
+  public static associations: {
+    tambons: Association<Amphure, Tambon>;
+  };
 }
 
 Amphure.init(
@@ -68,5 +77,11 @@ Amphure.init(
     sequelize,
   }
 );
+
+Amphure.hasMany(Tambon, {
+  sourceKey: "id",
+  foreignKey: "amphureId",
+  as: "tambons",
+});
 
 export default Amphure;

@@ -10,12 +10,16 @@ import User from "@/database/models/User.model";
 import { loaders } from "@/utils/loader";
 import Amphure from "./database/models/Amphure.model";
 import Province from "./database/models/Province.model";
+import Tambon from "./database/models/Tambon.model";
 
 const app = new Elysia();
 
 app
   .use(bearer())
   .use(swagger({ path: "/docs" }))
+  .get("/", () => {
+    return "check /docs for documentation";
+  })
   .use(healthCheck)
   .use(users)
   .use(
@@ -144,12 +148,10 @@ app
             }
           },
           createProvince: async () => {
-            const resuts = await axios.get(
-              "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province_with_amphure_tambon.json",
-              { responseType: "json" }
-            );
+            const mainUrl =
+              "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province_with_amphure_tambon.json";
 
-            console.log(resuts);
+            const resuts = await axios.get(mainUrl, { responseType: "json" });
 
             const provinces = resuts.data.map((province: any) => ({
               id: province.id,
@@ -159,19 +161,23 @@ app
                 id: amphure.id,
                 nameThai: amphure.name_th,
                 nameEng: amphure.name_en,
-                // tambons: amphure.tambons.map((tambon: any) => ({
-                //   id: tambon.id,
-                //   nameThai: tambon.name_th,
-                //   nameEng: tambon.name_en,
-                //   zipCode: tambon.zip_code,
-                // })),
+                tambons: amphure.tambon.map((tambon: any) => ({
+                  id: tambon.id,
+                  nameThai: tambon.name_th,
+                  nameEng: tambon.name_en,
+                  zipCode: tambon.zip_code,
+                })),
               })),
             }));
 
-            console.log(provinces);
-
             const data = await Province.bulkCreate(provinces, {
-              include: [{ model: Amphure, as: "amphures" }],
+              include: [
+                {
+                  model: Amphure,
+                  as: "amphures",
+                  include: [{ model: Tambon, as: "tambons" }],
+                },
+              ],
             });
 
             return data;
