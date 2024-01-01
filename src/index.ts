@@ -6,13 +6,17 @@ import { healthCheck, users } from "@/route";
 import { yoga } from "@elysiajs/graphql-yoga";
 
 import User from "@/database/models/User.model";
-import { loaders } from "@/utils/loader";
+import { Loader, loaders } from "@/utils/loader";
 
-import Amphure from "./database/models/District.model";
+import District from "./database/models/District.model";
 import Province from "./database/models/Province.model";
-import Tambon from "./database/models/SubDistrict.model";
+import SubDistrict from "./database/models/SubDistrict.model";
 
 const app = new Elysia();
+
+type Context = {
+  loaders: Loader;
+};
 
 app
   .use(bearer())
@@ -30,8 +34,8 @@ app
           getUser(id: String!): User!
 
           allProvinces: [Province!]!
-          allAmphures: [Amphure!]!
-          allTambons: [Tambon!]!
+          allDistricts: [District!]!
+          allSubDistricts: [SubDistrict!]!
         }
 
         type Mutation {
@@ -49,13 +53,24 @@ app
           id: Int!
           nameThai: String!
           nameEng: String!
+          districts: [District!]!
         }
 
-        type Amphure {
+        type District {
           id: Int!
           nameThai: String!
           nameEng: String!
           provinceId: Int!
+          province: Province!
+          subDistricts: [SubDistrict!]
+        }
+
+        type SubDistrict {
+          id: Int!
+          nameThai: String!
+          nameEng: String!
+          districtId: Int!
+          district: District!
         }
       `,
       context: {
@@ -83,15 +98,15 @@ app
 
             return provinces;
           },
-          allAmphures: async () => {
-            const amphures = await Amphure.findAll();
+          allDistricts: async () => {
+            const districts = await District.findAll();
 
-            return amphures;
+            return districts;
           },
-          allTambons: async () => {
-            const tambons = await Tambon.findAll();
+          allSubDistricts: async () => {
+            const subDistricts = await SubDistrict.findAll();
 
-            return tambons;
+            return subDistricts;
           },
         },
         Mutation: {
@@ -142,7 +157,7 @@ app
               throw new Error("Error updating user");
             }
           },
-          deleteUser: async (_, { id }) => {
+          deleteUser: async (_, { id }, { loaders }) => {
             const user = await User.findByPk(id);
 
             if (!user) {
@@ -158,8 +173,26 @@ app
             }
           },
         },
+        Province: {
+          districts(parent: Province, args: {}, { loaders }: Context) {
+            const districts = loaders.districtsByProvinceLoader.load(parent.id);
+            return districts;
+          },
+        },
+        District: {
+          province(parent: District, args: {}, { loaders }: Context) {
+            return loaders.provinceLoader.load(parent.provinceId);
+          },
+          subDistricts(parent: District, args: {}, { loaders }: Context) {
+            return loaders.subDistrictsByDistrictLoader.load(parent.id);
+          },
+        },
+        SubDistrict: {
+          district(parent: SubDistrict, args: {}, { loaders }: Context) {
+            return loaders.districtLoader.load(parent.districtId);
+          },
+        },
       },
-      logging: "debug",
     })
   )
   .listen(3000);

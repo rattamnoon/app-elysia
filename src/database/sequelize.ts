@@ -12,6 +12,7 @@ const sequelize = new Sequelize({
     timestamps: true,
   },
   //   models: [],
+  logging: false,
 });
 
 export default sequelize;
