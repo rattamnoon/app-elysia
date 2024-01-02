@@ -39,7 +39,12 @@ bun db:seed
 ```
 
 ```shell
+# on docker container
 DB_HOST=db
+
+# on local
+DB_HOST=localhost
+
 DB_PORT=5432
 DB_DATABASE=db
 DB_USERNAME=user
