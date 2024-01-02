@@ -5,6 +5,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "bun run --watch src/index.ts",
     "db:run": "cd ./database && docker compose up -d && sleep 5 && cd .. && npx sequelize-cli db:migrate",
+    "db:migrate": "npx sequelize-cli db:migrate",
     "db:seed": "npx sequelize-cli db:seed:all",
     "db:down": "cd ./database && docker compose down && cd .."
   },

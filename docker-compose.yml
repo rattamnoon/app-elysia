@@ -2,13 +2,22 @@
 version: "3.9"
 
 services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database/data-postgres:/var/lib/postgresql/data
+
   app:
     image: "oven/bun"
-    # override default entrypoint allows us to do `bun install` before serving
+    depends_on: ["db"]
     entrypoint: []
-    # execute bun install before we start the dev server in watch mode
     command: "/bin/sh -c 'bun install && bun run --watch src/index.ts'"
-    # expose the right ports
     ports: ["3000:3000"]
-    # setup a host mounted volume to sync changes to the container
     volumes: ["./:/home/bun/app"]
