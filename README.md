@@ -37,3 +37,12 @@ bun db:run
 ```shell
 bun db:seed
 ```
+
+```shell
+DB_HOST=db
+DB_PORT=5432
+DB_DATABASE=db
+DB_USERNAME=user
+DB_PASSWORD=password
+DB_DIALECT=postgres
+```
